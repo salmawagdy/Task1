@@ -19,3 +19,9 @@ def product_by_id(request, pk):
 
     serializer = ProductSerializer(product)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def active_products(request):
+    products = Product.objects.filter(is_active=True)
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
