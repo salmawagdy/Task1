@@ -3,9 +3,27 @@ from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
 
+
 @api_view(['GET'])
 def product_list(request):
+    search = request.query_params.get('search')
+    min_price = request.query_params.get('min_price')
+    max_price = request.query_params.get('max_price')
+
     products = Product.objects.all()
+
+    
+    if search:
+        products = products.filter(name__icontains=search)
+
+    
+    if min_price:
+        products = products.filter(price__gte=min_price)
+
+    
+    if max_price:
+        products = products.filter(price__lte=max_price)
+
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
