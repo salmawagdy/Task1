@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
 
-
+#123
 @api_view(['GET'])
 def product_list(request):
     search = request.query_params.get('search')
