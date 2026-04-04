@@ -1,10 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
+from rest_framework.throttling import  UserRateThrottle, AnonRateThrottle
 
-#123
+
 @api_view(['GET'])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def product_list(request):
     search = request.query_params.get('search')
     min_price = request.query_params.get('min_price')
@@ -29,22 +31,14 @@ def product_list(request):
 
 
 @api_view(['GET'])
-def product_by_id(request, pk):
-    try:
-        product = Product.objects.get(pk=pk)
-    except Product.DoesNotExist:
-        return Response({'error': 'Product not found'}, status=404)
-
-    serializer = ProductSerializer(product)
-    return Response(serializer.data)
-
-@api_view(['GET'])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def active_products(request):
     products = Product.objects.filter(is_active=True)
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def create_product(request):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
