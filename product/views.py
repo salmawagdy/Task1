@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.throttling import  UserRateThrottle, AnonRateThrottle
-
+from .paginations import CustomPagination
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
@@ -26,16 +26,22 @@ def product_list(request):
     if max_price:
         products = products.filter(price__lte=max_price)
 
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    paginator = CustomPagination()
+    paginated_products = paginator.paginate_queryset(products, request)
+
+    serializer = ProductSerializer(paginated_products, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
+
 def active_products(request):
     products = Product.objects.filter(is_active=True)
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    paginator = CustomPagination()
+    paginated_products = paginator.paginate_queryset(products, request)
+    serializer = ProductSerializer(paginated_products, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['POST'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
