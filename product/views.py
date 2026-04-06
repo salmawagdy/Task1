@@ -1,12 +1,16 @@
-from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.decorators import api_view, throttle_classes, permission_classes
 from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.throttling import  UserRateThrottle, AnonRateThrottle
 from .paginations import CustomPagination
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status
+from users.permissions import IsAdmin, IsRegularUser
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
+@permission_classes([AllowAny])
 def product_list(request):
     search = request.query_params.get('search')
     min_price = request.query_params.get('min_price')
@@ -35,7 +39,7 @@ def product_list(request):
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
-
+@permission_classes([IsAuthenticated])
 def active_products(request):
     products = Product.objects.filter(is_active=True)
     paginator = CustomPagination()
@@ -45,6 +49,7 @@ def active_products(request):
 
 @api_view(['POST'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
+@permission_classes([IsAuthenticated, IsAdmin])
 def create_product(request):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
