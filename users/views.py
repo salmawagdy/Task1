@@ -8,20 +8,34 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, UserSerializer
 from .permissions import IsAdmin, IsRegularUser
+from rest_framework.permissions import IsAdminUser
+from django.db import transaction
+from .tasks import send_welcome_email
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
+
     if serializer.is_valid():
-        user = serializer.save()
-        token, _ = Token.objects.get_or_create(user=user)
+        with transaction.atomic():
+            user = serializer.save()
+            token, _ = Token.objects.get_or_create(user=user)
+
+        # 🚀 Celery background task
+        send_welcome_email.delay(user.email)
+
         return Response({
             "user": UserSerializer(user).data,
             "token": token.key
         }, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({
+        "errors": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 @api_view(['POST'])
