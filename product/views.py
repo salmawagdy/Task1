@@ -7,35 +7,44 @@ from .paginations import CustomPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from users.permissions import IsAdmin, IsRegularUser
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
+import time 
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([AllowAny])
+@cache_page(60 * 15)
+@vary_on_headers('User-Agent')
 def product_list(request):
+
     search = request.query_params.get('search')
     min_price = request.query_params.get('min_price')
     max_price = request.query_params.get('max_price')
 
     products = Product.objects.all()
 
-    
+    time.sleep(3)
+
     if search:
         products = products.filter(name__icontains=search)
 
-    
     if min_price:
         products = products.filter(price__gte=min_price)
 
-    
     if max_price:
         products = products.filter(price__lte=max_price)
+
+
+    products = list(products)
 
     paginator = CustomPagination()
     paginated_products = paginator.paginate_queryset(products, request)
 
     serializer = ProductSerializer(paginated_products, many=True)
-    return paginator.get_paginated_response(serializer.data)
 
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
