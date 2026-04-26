@@ -23,7 +23,7 @@ def product_list(request):
     min_price = request.query_params.get('min_price')
     max_price = request.query_params.get('max_price')
 
-    products = Product.objects.all()
+    products = Product.objects.select_related('category').all()
 
     time.sleep(3)
 
