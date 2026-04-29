@@ -14,11 +14,15 @@ import time
 from drf_spectacular.utils import extend_schema
 
 
-@extend_schema(request=None, responses={200: ProductSerializer(many=True)}, tags=['Products']) 
+
+@extend_schema(
+    responses={200: ProductSerializer(many=True)},
+    tags=['Products']
+)
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([AllowAny])
-@cache_page(60 * 15)
+@cache_page(60 * 15) 
 @vary_on_headers('User-Agent')
 def product_list(request):
 
@@ -26,9 +30,10 @@ def product_list(request):
     min_price = request.query_params.get('min_price')
     max_price = request.query_params.get('max_price')
 
+    
     products = Product.objects.select_related('category').all()
 
-    time.sleep(3)
+    # time.sleep(3)  
 
     if search:
         products = products.filter(name__icontains=search)
@@ -39,15 +44,14 @@ def product_list(request):
     if max_price:
         products = products.filter(price__lte=max_price)
 
-
-    products = list(products)
-
     paginator = CustomPagination()
     paginated_products = paginator.paginate_queryset(products, request)
 
-    serializer = ProductSerializer(paginated_products, many=True)
-
+    serializer = ProductSerializer(paginated_products, many=True
+        )
     return paginator.get_paginated_response(serializer.data)
+
+
 
 @extend_schema(request=None, responses={200: ProductSerializer(many=True)}, tags=['Products'])
 @api_view(['GET'])
@@ -71,3 +75,32 @@ def create_product(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+
+@extend_schema(
+    responses={200: ProductSerializer},
+    tags=['Products']
+)
+@api_view(['GET'])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
+@permission_classes([IsAuthenticated])
+def product_detail(request, pk):
+
+    try:
+        product = Product.objects.get(pk=pk)
+
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Product.DoesNotExist:
+        return Response(
+            {"error": "Product not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    except Exception as e:
+        return Response(
+            {"error": "Something went wrong", "details": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

@@ -1,7 +1,8 @@
 from django.db import models
 from category.models import Category
+from django_softdelete.models import SoftDeleteModel
 
-class Product(models.Model):
+class Product(SoftDeleteModel):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     is_active = models.BooleanField(default=True)
