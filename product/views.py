@@ -11,7 +11,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 import time 
+from drf_spectacular.utils import extend_schema
 
+
+@extend_schema(request=None, responses={200: ProductSerializer(many=True)}, tags=['Products']) 
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([AllowAny])
@@ -46,6 +49,7 @@ def product_list(request):
 
     return paginator.get_paginated_response(serializer.data)
 
+@extend_schema(request=None, responses={200: ProductSerializer(many=True)}, tags=['Products'])
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([IsAuthenticated])
@@ -56,6 +60,8 @@ def active_products(request):
     serializer = ProductSerializer(paginated_products, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
+@extend_schema(request=ProductSerializer, responses={201: ProductSerializer}, tags=['Products'])
 @api_view(['POST'])
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([IsAuthenticated, IsAdmin])

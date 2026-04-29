@@ -11,8 +11,16 @@ from .permissions import IsAdmin, IsRegularUser
 from rest_framework.permissions import IsAdminUser
 from django.db import transaction
 from .tasks import send_welcome_email
+from drf_spectacular.utils import extend_schema
 
-
+@extend_schema(
+    request=RegisterSerializer,
+    responses={
+        201: UserSerializer,
+        400: None
+    },
+    tags=['Authentication']
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -23,7 +31,6 @@ def register(request):
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
 
-        # 🚀 Celery background task
         send_welcome_email.delay(user.email)
 
         return Response({
@@ -37,7 +44,14 @@ def register(request):
 
 
 
-
+@extend_schema(
+    request=UserSerializer, 
+    responses={
+        200: UserSerializer,
+        400: None
+    },
+    tags=['Authentication']
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -57,14 +71,28 @@ def login(request):
         "token": token.key
     })
 
-
+@extend_schema(
+    request=None,
+    responses={
+        200: None,
+        401: None
+    },  
+    tags=['Authentication']
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
     return Response({"message": "Logged out successfully."})
 
-
+@extend_schema(
+    request=None,   
+    responses={
+        200: UserSerializer,
+        401: None
+    },
+    tags=['User']
+)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def profile(request):
