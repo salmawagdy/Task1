@@ -12,6 +12,9 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 import time 
 from drf_spectacular.utils import extend_schema
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -25,6 +28,7 @@ from drf_spectacular.utils import extend_schema
 @cache_page(60 * 15) 
 @vary_on_headers('User-Agent')
 def product_list(request):
+    logger.info("Fetching product list")
 
     search = request.query_params.get('search')
     min_price = request.query_params.get('min_price')
@@ -86,6 +90,7 @@ def create_product(request):
 @throttle_classes([UserRateThrottle, AnonRateThrottle])
 @permission_classes([IsAuthenticated])
 def product_detail(request, pk):
+    logger.info(f"Fetching details for product ID: {pk}")
 
     try:
         product = Product.objects.get(pk=pk)
@@ -94,6 +99,7 @@ def product_detail(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Product.DoesNotExist:
+        logger.error(f"Product with ID {pk} not found")
         return Response(
             {"error": "Product not found"},
             status=status.HTTP_404_NOT_FOUND

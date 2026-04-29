@@ -218,3 +218,39 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
     'SCHEMA_PATH_PREFIX': r'/api/v1/',
 }
+
+LOGGING = {
+    'version': 1,   
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': os.getenv('LOG_LEVEL'),
+            'class': 'logging.FileHandler',
+            'filename': os.getenv('LOG_FILE'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': os.getenv('LOG_LEVEL'),   
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+    },
+        },
+    'loggers': {
+        '': {
+            'handlers': ['file', 'console'],
+            'level':os.getenv('LOG_LEVEL'),
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '{asctime} - {name} - {levelname} - {message}',
+            'style': '{',
+        },
+    
+
+    'verbose': {
+        'format': '{asctime} - {name} - {levelname} - {message}- {pathname}:{lineno}',
+        'style': '{',
+    },
+    },
+}
