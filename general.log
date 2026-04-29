@@ -1,0 +1,15 @@
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 10 not found
+Product with ID 11 not found
+Product with ID 11 not found
+2026-04-29 23:38:45,585 - product.views - ERROR - Product with ID 77 not found
+2026-04-29 23:38:47,375 - product.views - ERROR - Product with ID 77 not found
+2026-04-29 23:43:09,810 - product.views - ERROR - Product with ID 77 not found- C:\Users\DELL22\MyProject\Task1\product\views.py:102
+2026-04-29 23:43:12,523 - product.views - ERROR - Product with ID 77 not found- C:\Users\DELL22\MyProject\Task1\product\views.py:102
+2026-04-29 23:43:13,516 - product.views - ERROR - Product with ID 77 not found- C:\Users\DELL22\MyProject\Task1\product\views.py:102
+2026-04-29 23:45:17,953 - product.views - ERROR - Product with ID 100 not found- C:\Users\DELL22\MyProject\Task1\product\views.py:102
