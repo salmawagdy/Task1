@@ -2,3 +2,13 @@
 2026-04-29 23:53:20,290 - product.views - INFO - Fetching details for product ID: 90- C:\Users\DELL22\MyProject\Task1\product\views.py:93
 2026-04-29 23:53:20,292 - product.views - ERROR - Product with ID 90 not found- C:\Users\DELL22\MyProject\Task1\product\views.py:102
 2026-04-29 23:53:20,294 - django.request - WARNING - Not Found: /api/products/detail/90/- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\log.py:253
+2026-04-30 17:20:38,719 - django.utils.autoreload - INFO - Watching for file changes with StatReloader- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\autoreload.py:667
+2026-04-30 17:20:48,883 - django.request - WARNING - Not Found: /- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\log.py:253
+2026-04-30 17:21:08,349 - django.request - WARNING - Not Found: /adminapi/schema/swagger-ui/- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\log.py:253
+2026-04-30 17:21:36,149 - product.views - INFO - Fetching product list- C:\Users\DELL22\MyProject\Task1\product\views.py:31
+2026-05-02 00:57:15,638 - django.utils.autoreload - INFO - C:\Users\DELL22\MyProject\Task1\Task1\settings.py changed, reloading.- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\autoreload.py:265
+2026-05-02 00:57:17,483 - django.utils.autoreload - INFO - Watching for file changes with StatReloader- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\autoreload.py:667
+2026-05-02 01:00:33,034 - django.request - WARNING - Not Found: /favicon.ico- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\log.py:253
+2026-05-02 01:00:38,256 - django.request - WARNING - Not Found: /swagger- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\log.py:253
+2026-05-02 01:00:59,104 - product.views - INFO - Fetching product list- C:\Users\DELL22\MyProject\Task1\product\views.py:31
+2026-05-02 01:03:43,885 - django.utils.autoreload - INFO - Watching for file changes with StatReloader- C:\Users\DELL22\MyProject\venv11\Lib\site-packages\django\utils\autoreload.py:667
